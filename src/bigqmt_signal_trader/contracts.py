@@ -44,6 +44,9 @@ class MarketDataProvider(Protocol):
     def get_instrument(self, code: str) -> dict:
         ...
 
+    def get_instrument_detail_list(self, stock_list: List[str], iscomplete: bool = False) -> Dict[str, dict]:
+        ...
+
 
 class PositionProvider(Protocol):
     def get_positions(self, account_id: str) -> Dict[str, PositionSnapshot]:

@@ -118,6 +118,24 @@ class BigQmtAdaptersTest(unittest.TestCase):
         self.assertEqual(context.instrument_codes, ["000001.SZ"])
         self.assertEqual(instrument["InstrumentStatus"], 0)
 
+    def test_market_provider_batches_instrument_details_in_one_rpc_handler(self):
+        context = FakeContext()
+        provider = BigQmtMarketDataProvider(context)
+
+        details = provider.get_instrument_detail_list(
+            ["600000.SH", "000001.SZ"],
+            iscomplete=False,
+        )
+
+        self.assertEqual(
+            details,
+            {
+                "600000.SH": {"InstrumentStatus": 0},
+                "000001.SZ": {"InstrumentStatus": 0},
+            },
+        )
+        self.assertEqual(context.instrument_codes, ["600000.SH", "000001.SZ"])
+
     def test_get_ticks_keys_keep_the_caller_case_for_futures(self):
         """issue #58: futures instrument codes are lower-case ('rb2708.SF'), but
         the keys came back upper-cased, so `code in result` failed for every

@@ -270,6 +270,7 @@ SAFE_B64_PREFIX = "b64s:"
 SAFE_B64_DIGIT_ENCODE = str.maketrans("0123456789", "!#$%&()*~?")
 SAFE_B64_DIGIT_DECODE = str.maketrans("!#$%&()*~?", "0123456789")
 MARKET_DATA_METHODS = {
+    "get_instrument_detail_list",
     "get_instrument_type",
     "get_market_data",
     "get_market_data_ex",

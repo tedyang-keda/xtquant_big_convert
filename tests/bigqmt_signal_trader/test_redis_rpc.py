@@ -55,6 +55,12 @@ class FakeMarketData:
     def get_instrument(self, code):
         return {"code": code, "InstrumentStatus": 0}
 
+    def get_instrument_detail_list(self, stock_list, iscomplete=False):
+        return {
+            code: {"code": code, "InstrumentStatus": 0}
+            for code in stock_list
+        }
+
     def get_market_data_ex(self, **kwargs):
         return {"params": kwargs, "data": {"600000.SH": {"close": [10.0]}}}
 
@@ -590,6 +596,21 @@ class AsyncOrderSettlementTest(unittest.TestCase):
 
 
 class RedisRpcTest(unittest.TestCase):
+    def test_instrument_detail_list_is_a_read_only_market_data_rpc(self):
+        handlers = BigQmtRpcHandlers(
+            account_id="acct",
+            market_data=FakeMarketData(),
+            position_provider=FakePositionProvider(),
+            order_gateway=DryRunOrderGateway(),
+        )
+
+        details = handlers.handle(
+            "get_instrument_detail_list",
+            {"stock_list": ["600000.SH", "000001.SZ"], "iscomplete": False},
+        )
+
+        self.assertEqual(sorted(details), ["000001.SZ", "600000.SH"])
+
     def test_execution_snapshot_queries_orders_and_all_trades_once(self):
         gateway = CapturingExecutionGateway()
         handlers = BigQmtRpcHandlers(

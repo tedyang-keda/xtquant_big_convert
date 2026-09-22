@@ -2093,6 +2093,13 @@ class BigQmtXtData:
     def get_instrument_detail(self, stock_code):
         return self.client.call("get_instrument_detail", {"code": stock_code}) or {}
 
+    def get_instrument_detail_list(self, stock_list, iscomplete=False):
+        return self._call(
+            "get_instrument_detail_list",
+            stock_list=list(stock_list or []),
+            iscomplete=bool(iscomplete),
+        ) or {}
+
     def get_instrumentdetail(self, stock_code):
         return self.get_instrument_detail(stock_code)
 

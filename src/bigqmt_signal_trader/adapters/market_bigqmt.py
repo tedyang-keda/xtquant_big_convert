@@ -1179,6 +1179,13 @@ class BigQmtMarketDataProvider:
         data = self.context_info.get_instrumentdetail(normalized)
         return data or {}
 
+    def get_instrument_detail_list(self, stock_list, iscomplete=False):
+        del iscomplete
+        return dict(
+            (str(code), self.get_instrument(code))
+            for code in list(stock_list or [])
+        )
+
     def get_instrument_type(self, code, variety_list=None):
         if hasattr(self.context_info, "get_instrument_type"):
             return self.context_info.get_instrument_type(code, variety_list)

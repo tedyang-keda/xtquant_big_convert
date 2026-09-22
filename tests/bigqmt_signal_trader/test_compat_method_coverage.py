@@ -268,6 +268,23 @@ class ContractInfoForwardingTest(unittest.TestCase):
         self.assertEqual(data.get_instrument("600519.SH"), {"InstrumentID": "600519"})
         self.assertEqual(data.seen, ["600519.SH"])
 
+    def test_get_instrument_detail_list_uses_one_rpc_call(self):
+        data = _Recorder()
+        data._answer = {"600519.SH": {"InstrumentID": "600519"}}
+
+        answer = data.get_instrument_detail_list(["600519.SH"], iscomplete=False)
+
+        self.assertEqual(answer, data._answer)
+        self.assertEqual(
+            data.calls,
+            [
+                (
+                    "get_instrument_detail_list",
+                    {"stock_list": ["600519.SH"], "iscomplete": False},
+                )
+            ],
+        )
+
     def test_get_ticks_delegates_to_get_full_tick(self):
         class _Tick(BigQmtXtData):
             def __init__(self):
